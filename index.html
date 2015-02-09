@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Sam Constraints Builder</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="dist/angular-ui-tree.min.css">
+  <link rel="stylesheet" href="css/sam.css">
+</head>
+<body ng-app="samApp" ng-init="collapseAll()">
+
+  <div class="container-fluid" ng-controller="tabsCtrl">
+      <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" style="cursor:default;">Sam IHM</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
+            <ul class="nav navbar-nav">
+              <li ng-click="selectTab(0)" ng-class="{'active': selectedTab === 0, '':  selectedTab !== 0}"><a>Upload</a></li>
+              <li ng-click="selectTab(1)" ng-class="{'active': selectedTab === 1, '':  selectedTab !== 1}"><a>Constraints Builder</a></li>
+              <li ng-click="selectTab(2)" ng-class="{'active': selectedTab === 2, '':  selectedTab !== 2}"><a>Results</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+    
+
+    <div class="row" ng-show="selectedTab === 0">
+      <h1 class="page-header">Sam File Uploader</h1>
+      <file-uploader></file-uploader>
+    </div>
+
+    <div class="row" ng-show="selectedTab === 1">
+      <h1 class="page-header">Sam Constraints Builder</h1>
+      <constraint-builder></constraint-builder>
+    </div>
+
+    <div class="row" ng-show="selectedTab === 2">
+      <h1 class="page-header">Sam Solver's Results</h1>
+      <iframe name="resultIframe" style="position: absolute; height: 100%; width:100%"></iframe>
+    </div>
+
+
+
+  <!--[if IE 8]>
+    <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
+  <![endif]-->
+
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script type="text/javascript" src="dist/jquery.csv-0.71.min.js"></script>
+  <script type="text/javascript" src="dist/angular-file-upload.js"></script>
+  <script type="text/javascript" src="dist/angular-ui-tree.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/treeController.js"></script>
+  <script type="text/javascript" src="js/builderController.js"></script>
+  <script type="text/javascript" src="js/constraintsDisplayController.js"></script>
+  <script type="text/javascript" src="js/aggregDistribController.js"></script>
+  <script type="text/javascript" src="js/uploadControllers.js"></script>
+</body>
+</html>

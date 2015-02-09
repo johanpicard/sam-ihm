@@ -1,0 +1,189 @@
+<div id="dimensions" class="col-lg-6" ng-controller="treeCtrl">
+<h3>Measures and dimensions</h3>
+  <p>
+    Search: <input ng-model="query" ng-change="findNodes()"/>
+    <a href="" class="btn btn-default pull-right" ng-click="collapseAll()">Collapse all</a>
+    <a href="" class="btn btn-default pull-right" ng-click="expandAll()">Expand all</a>
+  </p>
+
+  <!-- Measures tree -->
+  <script type="text/ng-template" id="nodes_renderer0.html">
+    <div ui-tree-handle nodrag ng-class="{'tree-node tree-node-content measures': this.depth() == 1, 'tree-node tree-node-content': this.depth() > 1}" ng-click="toggle(this)" data-nodrag style="cursor: pointer; cursor: hand;">
+      <a ng-class="{'btn btn-success btn-xs': this.depth() > 1, 'btn btn-primary measures-arrow btn-xs': this.depth() == 1}" nodrag><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+      {{node.title}}
+      <a class="pull-right btn btn-success btn-xs" nodrag ng-click="selectMeasure(this)" style="margin-right: 4px;" ng-show="this.depth() == 2" ng-disabled="isAdded(this,'distrib')">Add to distributions</a>
+      <a class="pull-right btn btn-primary btn-xs" nodrag ng-click="selectAggreg(this)" style="margin-right: 4px;" ng-show="this.depth() > 2" ng-disabled="isAdded(this,'aggreg')">Add to aggregations</a>
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}" data-nodrop>
+      <li ng-repeat="node in node.nodes" ui-tree-node collapsed="true" ng-include="'nodes_renderer0.html'" ng-show="visible(node)" data-nodrag>
+      </li>
+    </ol>
+  </script>
+  <div ui-tree id="tree-root1" data-drag-enabled="false">
+    <ol ui-tree-nodes="" ng-model="measures">
+      <li ng-repeat="node in measures" ui-tree-node ng-include="'nodes_renderer0.html'" ng-show="visible(node)" collapsed="true" ></li>
+    </ol>
+  </div>
+
+  <!-- Dimensions tree -->
+  <script type="text/ng-template" id="nodes_renderer1.html">
+    <div ui-tree-handle nodrag ng-class="{'group-title tree-node tree-node-content': this.depth() == 1, 'tree-node tree-node-content': this.depth() > 1}" ng-click="toggle(this)" data-nodrag style="cursor: pointer; cursor: hand;">
+      <a ng-class="{'btn btn-success btn-xs': this.depth() > 1, 'btn btn-info btn-xs': this.depth() == 1}" nodrag><span class="glyphicon" ng-class="{'glyphicon-chevron-right': collapsed, 'glyphicon-chevron-down': !collapsed}"></span></a>
+      {{node.title}}
+      <a class="pull-right btn btn-primary btn-xs" nodrag ng-click="addToBuilder(this)" style="margin-right: 4px;" ng-show="this.depth()>1" ng-disabled="isInCell(this)">Add to cell</a>
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}" data-nodrop>
+      <li ng-repeat="node in node.nodes" ui-tree-node collapsed="true" ng-include="'nodes_renderer1.html'" ng-show="visible(node)" data-nodrag>
+      </li>
+    </ol>
+  </script>
+  <div ui-tree id="tree-root1" data-drag-enabled="false">
+    <ol ui-tree-nodes="" ng-model="dimensions">
+      <li ng-repeat="node in dimensions" ui-tree-node ng-include="'nodes_renderer1.html'" ng-show="visible(node)" collapsed="true" ></li>
+    </ol>
+  </div>
+</div>
+
+<div id="builder" class="col-lg-6" ng-controller="buildCtrl">
+  <h3>Constraint</h3>
+  <div style="padding-left:10px;">
+    <h4>Cell</h4>
+
+      <!-- Cell drag'n'drop tree -->
+      <div class="angular-ui-tree-empty angular-ui-tree-handle" style="cursor: default; margin-bottom: 5px;">All</div>
+      <script type="text/ng-template" id="nodes_renderer2.html">
+        <div ui-tree-handle class="tree-node tree-node-content" >
+          {{node.title}}
+          <a class="pull-right btn btn-danger btn-xs" nodrag ng-click="revertCellAdd(this);remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+        <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+          <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer2.html'" >
+          </li>
+        </ol>
+      </script>
+      <div ui-tree id="tree-root2" data-max-depth="2">
+        <ol ui-tree-nodes="" ng-model="data">
+          <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer2.html'" ng-show="visible(node)"></li>
+        </ol>
+      </div>
+
+      <div ng-controller="aggregCtrl" >
+      <h4>Aggregations</h4>
+
+      <!-- Aggregation list -->
+       <script type="text/ng-template" id="nodes_renderer3.html">
+       <div ui-tree-handle class="tree-node tree-node-content" style="cursor: default;">
+         {{node.title}}
+         <a class="pull-right btn btn-danger btn-xs" nodrag data-nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+       </div>
+       <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+         <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer3.html'" >
+         </li>
+       </ol>
+       </script>
+       <div ui-tree id="tree-root3" data-max-depth="1" data-drag-enabled="false">
+         <ol ui-tree-nodes="" ng-model="aggregations">
+           <li ng-repeat="node in aggregations" ui-tree-node ng-include="'nodes_renderer3.html'" ng-show="visible(node)"></li>
+         </ol>
+       </div>
+
+       <form name="aggregForm" novalidate class="simple-form" ng-submit="aggregForm.$valid && submitAggreg()">
+
+        <div ng-hide="!emptyAggreg()">
+          {{selectedItem}}
+        </div>
+
+        <div ng-show="!emptyAggreg()" style="overflow: hidden;">
+          <div style="float:left;">
+            {{selectedItem}} &nbsp;
+            <input type="number" ng-model="percentValue" min="0" max="100" ng-show="isPercentage" ng-required="isPercentage"></input>
+            <input type="number" ng-model="percentValue" min="0" ng-hide="isPercentage" ng-required="!isPercentage"></input>
+            <span ng-show="isPercentage">%&nbsp;</span>
+          </div>
+          <div class="checkbox aggreg-checkbox">
+            <label>
+              <input type="checkbox" ng-model="isPercentage"> Percentage
+            </label>
+          </div>
+          &nbsp;
+          <div class="aggreg-add-btn">
+            <a class="btn btn-primary btn-xs" ng-disabled="!canAddAggreg()" ng-click="submitAggreg()"><span class="glyphicon glyphicon-plus"></span></a>
+          </div>
+          <br/>
+        </div>
+      </form>
+
+        <h4>Distributions</h4>
+
+        <!-- Distribution list -->
+        <div ui-tree id="tree-root3" data-max-depth="1" data-drag-enabled="false">
+          <ol ui-tree-nodes="" ng-model="distributions">
+            <li ng-repeat="node in distributions" ui-tree-node ng-include="'nodes_renderer3.html'" ng-show="visible(node)"></li>
+          </ol>
+        </div>
+
+        <form name="distribForm" novalidate class="simple-form" ng-submit="distribForm.$valid && submitDistrib()">
+
+          <div ng-hide="canAddDistrib()">
+            {{selectedMeasure}}
+          </div>
+          <div ng-show="canAddDistrib()" style="overflow: hidden;">
+            <div style="float:left;">
+              Distribution for {{selectedMeasure}} :
+              <input type="text" ng-model="lawParameters" required></input>
+            </div>
+            <div class="aggreg-add-btn">
+              <a class="btn btn-primary btn-xs" ng-disabled="!canAddDistrib() || !distribForm.$valid" ng-click="submitDistrib()"><span class="glyphicon glyphicon-plus"></span></a>
+            </div>
+          </div>
+
+        </form>
+
+        <div class="buttonWrapper" style="padding-top:20px">
+          <button type="button" class="btn btn-success" ng-disabled="disableAddConstraint()" ng-click="addConstraint()">Add constraint</button>
+        </div>
+      </div>
+      <br/>
+      <div class="buttonWrapper">
+          <button type="button" class="btn btn-danger" ng-disabled="disableSolve()" ng-click="postSolve()" ng-hide="iframeVisible" >
+           Solve
+          </button>
+      </div>
+      <br/>
+       <iframe name="dummyiframe" style="display:block;margin: 0 auto;" ng-show="iframeVisible" scrolling="no"></iframe>
+</div>
+
+<h3>Current constraints</h3>
+
+<!-- Constraints tree -->
+<div ng-controller="constraintsCtrl">
+  <script type="text/ng-template" id="nodes_renderer4.html">
+    <div ui-tree-handle class="tree-node tree-node-content" style="cursor: default;">
+      {{node.title}}
+      <a class="pull-right btn btn-danger btn-xs"nodrag ng-click="remove(this)"><span class="glyphicon glyphicon-remove"></span></a>
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+      <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer4.html'">
+      </li>
+    </ol>
+  </script>
+  <div ui-tree data-drag-enabled="false">
+    <ol ui-tree-nodes="" ng-model="currConstraints">
+      <li ng-repeat="node in currConstraints" ui-tree-node ng-include="'nodes_renderer4.html'" ></li>
+    </ol>
+  </div>
+  <br/>
+  <div ng-show ="showButton">
+    <button type="button" class="btn btn-primary btn-xs" ng-click="showLoadedContent = !showLoadedContent" ng-hide="showLoadedContent" >
+        <span class="glyphicon glyphicon-chevron-down"></span> Display the current constraints file
+    </button>
+    <button type="button" class="btn btn-primary btn-xs" ng-click="showLoadedContent = !showLoadedContent" ng-hide="!showLoadedContent">
+        <span class="glyphicon glyphicon-chevron-up"></span> Hide the current constraints file
+    </button>
+    Copyable constraints file : <input ng-model="json"/>
+    <div ng-show="showLoadedContent">
+        <pre>{{ builderCstFile | json }}</pre>
+    </div>
+  </div>
+
+</div>
