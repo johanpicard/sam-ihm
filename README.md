@@ -22,9 +22,9 @@ Le client web a été développé en JavaScript en utilisant le framework open s
 
 Le dossier bower_components contient toutes les librairies externes importées via bower, un outil de gestion de dépendances facilitant leur téléchargement et leur mise à jour. Cela inclut :
 
-*Angular lui même
-*Bootstrap, une librairie de composants et de feuilles de styles facilitant le design, proposée par twitter
-*JQuery
+* Angular lui même
+* Bootstrap, une librairie de composants et de feuilles de styles facilitant le design, proposée par twitter
+* JQuery
 
 Le dossier css contient la feuille de style personnalisée que j’ai créée afin de compléter bootstrap.
 
