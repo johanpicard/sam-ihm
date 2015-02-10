@@ -4,13 +4,13 @@
 
 Les principales fonctionnalités apportées par l’interface développée sont les suivantes :
 
-*Interactions avec le solveur facilitées
-*Conception des contraintes guidée et cadrée
-*Validation itérative et automatique du jeu de contraintes
-*Résultats du solveur en quasi temps réel sur l’interface
-*Possibilité d’ouvrir SAM vers l’extérieur ou de l’utiliser comme un service
+* Interactions avec le solveur facilitées
+* Conception des contraintes guidée et cadrée
+* Validation itérative et automatique du jeu de contraintes
+* Résultats du solveur en quasi temps réel sur l’interface
+* Possibilité d’ouvrir SAM vers l’extérieur ou de l’utiliser comme un service
 
-Afin de permettre ces améliorations, une architecture de type client-serveur a été mise en place :
+Afin de permettre ces améliorations, une architecture de type client-serveur a été mise en place.
 
 SAM a donc été transformé en serveur en utilisant la librairie python Flask, permettant de lancer simplement une exécution du solveur en envoyant une requête HTTP contenant toutes les informations nécessaires, et de retourner le résultat de son exécution en JSON suivant le même canal. Cette requête doit donc contenir le fichier de contraintes, le modèle du cube et les différentes instances de chaque dimension. Cette architecture est donc qualifiable de “stateless”, le serveur ne possédant aucune donnée et servant juste à exécuter une tâche en fonction des données qu’on lui fournit en entrée.
 
@@ -30,9 +30,9 @@ Le dossier css contient la feuille de style personnalisée que j’ai créée af
 
 Le dossier dist contient les librairies importées manuellement sans utiliser bower pour diverses raisons. Cela inclut :
 
-*La libraire aidant la partie Upload de l’interface
-*La librairie contenant le code de base du composant “arbre hiérarchique” utilisé à de multiple reprises dans la partie Constraint Builder de l’interface.
-*Une librairie permettant de lire facilement des fichiers CSV
+* La libraire aidant la partie Upload de l’interface
+* La librairie contenant le code de base du composant “arbre hiérarchique” utilisé à de multiple reprises dans la partie Constraint Builder de l’interface.
+* Une librairie permettant de lire facilement des fichiers CSV
 
 Le dossier fonts contient quelques éléments de graphismes.
 
@@ -47,7 +47,11 @@ Le fichier index.html est le fichier racine de la page affichée. C’est dans c
 Dans le dossier js, le fichier app.js est le contrôleur principal de l’application. Il contient notamment le service ”builderService” permettant de partager certaines données entre les différents contrôleurs, qui est le ciment de l’application.
 
 Le fichier aggregDistribController.js contient le contrôleur qui gère la partie d’ajout d’aggregations et de distributions aux contraintes.
+
 Le fichier builderController.js contient le contrôleur qui gère la construction de la contrainte globalement, et qui envoie la requête POST au serveur une fois celle-ci validée.
+
 Le fichier constraintsDisplayController.js contient le contrôleur qui gère l’affichage du jeu de contraintes à chaque ajout de contrainte, suppression de contrainte et chargement de fichier de contraintes.
+
 Le fichier treeController.js contient le contrôleur qui gère tout l’arbre de mesures et de dimensions. Ceci inclue les algorithmes de parsing et processing des fichiers uploadés afin d’en extraire des valeurs pour les dimensions et mesures, et de les formatter afin de pouvoir être affichées sous forme d’arbres.
+
 Le fichier uploadControllers.js contient les 3 contrôleurs qui gèrent l’upload des fichiers de contraintes, de modèle de cube et de données CSV. 
