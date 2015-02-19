@@ -11,6 +11,7 @@
     var selectedMeasure = 'Please select a measure to add';
     var addedToCell = [];
     var constraintsFile = {constraint:[]};
+    var results = [];
     var cubeFile = {};
     var dataFile = [];
     var solve = 0;
@@ -21,6 +22,12 @@
       },
       getConstraintsFile: function () {
         return constraintsFile;
+      },
+      setResults: function(solution) {
+        results = solution;
+      },
+      getResults: function () {
+        return results;
       },
       setCube: function(cubeObject) {
         cubeFile = cubeObject;
@@ -145,6 +152,13 @@
     return {
       restrict: "E",
       templateUrl: 'file-uploader.html'
+    };
+  });
+
+  app.directive('results', function() {
+    return {
+      restrict: "E",
+      templateUrl: 'results.html'
     };
   });
 

@@ -40,7 +40,9 @@ Le dossier js contient toute la logique de l’application, à savoir les diffé
 
 Le fichier constraint-builder.html contient toute la partie HTML de l’onglet Constraint Builder de l’interface, à savoir les squelettes et positions des différents arbres hiérarchiques, les titres et autres champs et boutons. De la même façon, le fichier file-uploader.html contient tout le template HTML de l’onglet Upload de l’interface.
 
-Le fichier index.html est le fichier racine de la page affichée. C’est dans celui-ci que l’on retrouvera toutes les inclusions de dépendances nécessaires à l’application, ainsi que la barre de menu en haut de page, le système d’onglet et des liens vers le constraint builder et le file uploader.
+Le fichier results.html contient seulement la liste des résultats dans l'onglet Results de l'interface
+
+Le fichier index.html est le fichier racine de la page affichée. C’est dans celui-ci que l’on retrouvera toutes les inclusions de dépendances nécessaires à l’application, ainsi que la barre de menu en haut de page, le système d’onglet et des liens vers le constraint builder, le file uploader et les résultats.
 
 ###Dossier JS :
 
@@ -55,3 +57,5 @@ Le fichier constraintsDisplayController.js contient le contrôleur qui gère l�
 Le fichier treeController.js contient le contrôleur qui gère tout l’arbre de mesures et de dimensions. Ceci inclue les algorithmes de parsing et processing des fichiers uploadés afin d’en extraire des valeurs pour les dimensions et mesures, et de les formatter afin de pouvoir être affichées sous forme d’arbres.
 
 Le fichier uploadControllers.js contient les 3 contrôleurs qui gèrent l’upload des fichiers de contraintes, de modèle de cube et de données CSV. 
+
+Le fichier resultsController.js contient le contrôleur dont le rôle est de formatter et afficher les résultats retournés par le solveur après chaque éxecution. 

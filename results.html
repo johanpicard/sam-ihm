@@ -1,0 +1,19 @@
+<div id="results" class="col-lg-12" ng-controller="resultsCtrl">
+  <div ng-show="showDisclaimer()">
+    <h4>You need to run the solver at least once to see the results of its execution</h4>
+  </div>
+  <script type="text/ng-template" id="nodes_renderer5.html">
+    <div ui-tree-handle class="tree-node tree-node-content" ng-class="{'real-constraint': node.realConstraint, 'deducted-constraint': !node.realConstraint}">
+      {{node.title}}
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
+      <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer5.html'">
+      </li>
+    </ol>
+  </script>
+  <div ui-tree data-drag-enabled="false">
+    <ol ui-tree-nodes="" ng-model="formattedResults">
+      <li ng-repeat="node in formattedResults" ui-tree-node ng-include="'nodes_renderer5.html'" ></li>
+    </ol>
+  </div>
+</div>

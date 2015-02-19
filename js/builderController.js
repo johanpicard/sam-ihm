@@ -5,8 +5,8 @@
     $scope.jsonConstraints = '{"constraint":[]}';
     $scope.jsonModel = "{}";
     $scope.jsonData = "[]";
-    $scope.postData = "{}";
-    $scope.iframeVisible = false;
+    $scope.resultVisible = false;
+    $scope.nbOfFacts = "Waiting for the solver ...";
 
     $scope.data = builderService.getCell();
 
@@ -16,59 +16,40 @@
     }
 
     $scope.postSolve = function() {
-      $scope.iframeVisible = true;
-      /*$.post("http://localhost:5000/solve", $scope.postData, function(response) {
-        $scope.loading = false;
-        console.log( "postSuccess !" );
-        console.log(response)
-      }, 'json');*/
+      $scope.resultVisible = true;
+      $scope.nbOfFacts = "Waiting for the solver ...";
       var formObject = {};
       formObject['jsoncsv'] = $scope.jsonData;
       formObject['jsonmodel'] = $scope.jsonModel;
       formObject['jsonconstraints'] = $scope.jsonConstraints;
-      $scope.post("http://localhost:5000/solve", formObject);
+      $.post("http://localhost:5000/solve", formObject, function(response) {
+        $scope.loading = false;
+        $scope.nbOfFacts = $scope.updateNbOfFacts(response);
+        if (response.solution) {
+          builderService.setResults(response.solution)
+        }
+        $scope.$apply();
+      }, 'json');
     }
 
-    $scope.post = function(path, params, method) {
-      method = method || "post"; // Set method to post by default if not specified.
-
-      var form = document.createElement("form");
-      form.setAttribute("method", method);
-      form.setAttribute("action", path);
-      form.setAttribute("target", "dummyiframe");
-
-      for(var key in params) {
-          if(params.hasOwnProperty(key)) {
-              var hiddenField = document.createElement("input");
-              hiddenField.setAttribute("type", "hidden");
-              hiddenField.setAttribute("name", key);
-              hiddenField.setAttribute("value", params[key]);
-
-              form.appendChild(hiddenField);
-           }
+    $scope.updateNbOfFacts = function(response) {
+      var nb = $scope.getNbOfFacts(response);
+      if (nb >= 0) {
+        return "Number of generated rows : " + nb;
+      } else {
+        return "Error, the the solver's response is badly formatted";
       }
+    }
 
-      document.body.appendChild(form);
-      form.submit();
-
-      var formResult = document.createElement("form");
-      formResult.setAttribute("method", method);
-      formResult.setAttribute("action", path);
-      formResult.setAttribute("target", "resultIframe");
-
-      for(var key in params) {
-          if(params.hasOwnProperty(key)) {
-              var hiddenFieldResult = document.createElement("input");
-              hiddenFieldResult.setAttribute("type", "hidden");
-              hiddenFieldResult.setAttribute("name", key);
-              hiddenFieldResult.setAttribute("value", params[key]);
-
-              formResult.appendChild(hiddenFieldResult);
-           }
+    $scope.getNbOfFacts = function(response) {
+      console.log(response);
+      var array = response.solution;
+      for (var i = 0; i < array.length; i++) {
+        if (array[i].cell[0].dimension === "all" && array[i].cell[0].level === "all" && array[i].cell[0].name === "all" && array[i].aggregation[0].name === "count" && array[i].aggregation[0].percentage === 100) {
+          return array[i].aggregation[0].value;
+        }
       }
-
-      document.body.appendChild(formResult);
-      formResult.submit();
+      return -1;
     }
 
     $scope.visible = function(item) {
@@ -155,21 +136,18 @@
       $scope.jsonConstraints = JSON.stringify(constraintsFile);
       $scope.jsonModel = JSON.stringify(builderService.getCubeFile());
       $scope.jsonData = JSON.stringify(builderService.getData());
-      //$scope.postData = [('jsonmodel',builderService.getCubeFile()), ('jsoncsv',builderService.getData()),('jsonconstraints',builderService.getConstraintsFile())];
     },true);
 
     $scope.$watch( function () { return builderService.getCubeFile(); }, function ( cubeFile ) {
       $scope.jsonConstraints = JSON.stringify(builderService.getConstraintsFile());
       $scope.jsonModel = JSON.stringify(cubeFile);
       $scope.jsonData = JSON.stringify(builderService.getData());
-      //$scope.postData = [('jsonmodel',builderService.getCubeFile()), ('jsoncsv',builderService.getData()),('jsonconstraints',builderService.getConstraintsFile())];
     },true);
 
     $scope.$watch( function () { return builderService.getData(); }, function ( dataFile ) {
       $scope.jsonConstraints = JSON.stringify(builderService.getConstraintsFile());
       $scope.jsonModel = JSON.stringify(builderService.getCubeFile());
       $scope.jsonData = JSON.stringify(dataFile);
-      //$scope.postData = [('jsonmodel',builderService.getCubeFile()), ('jsoncsv',builderService.getData()),('jsonconstraints',builderService.getConstraintsFile())];
     },true);
 
     $scope.$watch( function () { return builderService.getSolve(); }, function ( solve ) {
